@@ -1,0 +1,23 @@
+name: Build iOS unsigned ipa for self-sign
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.9
+      - name: Install pod
+        run: |
+          cd ios
+          pod install
+          cd ..
+      - name: Build unsigned ipa
+        run: flutter build ipa --release --no-codesign
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wenku8-unsigned-ipa
+          path: build/ios/ipa/*.ipa
